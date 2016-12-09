@@ -96,7 +96,14 @@ public:
 	virtual bool nextPoint( OrientedPoint3D< Real >& p )
 	{
 		bool ret = _stream.nextPoint( p );
-		p.p = _xForm * p.p , p.n = _normalXForm * p.n;
+
+		// Preserve the length of the normal vector.
+		Real normalLength = Length( p.n );
+		p.n = _normalXForm * p.n;
+		p.n /= Length( p.n );
+		p.n *= normalLength;
+
+		p.p = _xForm * p.p;
 		return ret;
 	}
 };
